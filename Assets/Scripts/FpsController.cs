@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class FpsController : MonoBehaviour
 {
+    public bool InputEnabled { get; set; }
+
     // It's better for camera to be a seperate object, not under the controller
     // Since we update the position in FixedUpdate(), it would cause a jittery vision
     [SerializeField]
@@ -78,6 +80,7 @@ public class FpsController : MonoBehaviour
         Application.targetFrameRate = 60; // My laptop is shitty and burn itself to death if not for this
         _transform = transform;
         _mouseLook = new MouseLook(_camTransform);
+        InputEnabled = true;
     }
 
     // All logic, including controller displacement, happens here
@@ -140,30 +143,24 @@ public class FpsController : MonoBehaviour
 
         var dt = Time.deltaTime;
 
-        // We use GetAxisRaw, since we need it to feel as responsive as possible
-        _moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
-
-        if (Input.GetKeyDown(KeyCode.Space) && !_isGonnaJump)
+        if (InputEnabled)
         {
-            _isGonnaJump = true;
+            // We use GetAxisRaw, since we need it to feel as responsive as possible
+            _moveInput = new Vector3(Input.GetAxisRaw("Horizontal"), 0, Input.GetAxisRaw("Vertical")).normalized;
+            if (Input.GetKeyDown(KeyCode.Space) && !_isGonnaJump)
+            {
+                _isGonnaJump = true;
+            }
+            else if (Input.GetKeyUp(KeyCode.Space))
+            {
+                _isGonnaJump = false;
+            }
+    
         }
-        else if (Input.GetKeyUp(KeyCode.Space))
-        {
-            _isGonnaJump = false;
-        }
-
         _camTransform.position = Vector3.Lerp(_camTransform.position, _transform.position, dt * 200f);
 
         var mouseLookForward = _mouseLook.Update();
         _transform.rotation = Quaternion.LookRotation(mouseLookForward.WithY(0), Vector3.up); // Only rotate vertically
-
-        // Reset player -- makes testing much easier
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            _transform.position = Vector3.zero + Vector3.up * 2f;
-            _velocity = Vector3.forward;
-        }
-
     }
 
     private void Accelerate(ref Vector3 playerVelocity, Vector3 accelDir, float maxSpeedAlongOneDimension, float accelCoeff, float dt)
@@ -304,11 +301,8 @@ public class FpsController : MonoBehaviour
         return totalDisplacement;
     }
 
-    public void ResetAt(Transform t)
+    public void ForceVelocity(Vector3 v)
     {
-        _transform.position = t.position + Vector3.up * 0.5f;
-        _camTransform.position = _transform.position;
-        _mouseLook.LookAt(t.position + t.forward);
-        _velocity = t.TransformDirection(Vector3.forward);
+        _velocity = v;
     }
 }

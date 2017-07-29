@@ -28,7 +28,7 @@ public class Grabber : MonoBehaviour
             {
                 var midScreen = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
                 RaycastHit hit;
-                if (Physics.Raycast(Camera.main.ScreenPointToRay(midScreen), out hit, 1f, 1 << _batteryLayer))
+                if (Physics.SphereCast(Camera.main.ScreenPointToRay(midScreen), 0.3f, out hit, 1f, 1 << _batteryLayer))
                 {
                     _grabbedBattery = hit.transform;
                     _grabbedBattery.gameObject.SetActive(false);

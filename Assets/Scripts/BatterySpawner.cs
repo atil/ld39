@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
@@ -16,10 +17,40 @@ public class BatterySpawner : MonoBehaviour
         _spawnTimer += Time.deltaTime;
         if (_spawnTimer > _nextSpawnTime)
         {
-            Instantiate(BatteryPrefab,
+            var go = Instantiate(BatteryPrefab,
                 RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length)].bounds), Quaternion.identity);
             _spawnTimer = 0;
-            _nextSpawnTime = Random.Range(1f, 1f);
+            _nextSpawnTime = Random.Range(3f, 5f);
+
+            StartCoroutine(BatteryLifeTime(go));
+        }
+    }
+
+    private IEnumerator BatteryLifeTime(GameObject go)
+    {
+        var lifeTimer = 25f;
+        var timer = 0f;
+        while (true)
+        {
+            timer += Time.deltaTime;
+
+            if (go == null) // Kamyona koduk
+            {
+                break;
+            }
+
+            if (timer > lifeTimer)
+            {
+                if (go.activeInHierarchy)
+                {
+                    Destroy(go);
+                    break;
+                }
+
+                lifeTimer *= 2f;
+            }
+
+            yield return null;
         }
     }
 

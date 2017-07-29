@@ -7,4 +7,8 @@ public class Ui : MonoBehaviour
 {
     public Slider KamyonHpSlider;
 
+    public void GameOver()
+    {
+
+    }
 }
