@@ -14,6 +14,7 @@ public class Kamyon : MonoBehaviour
 
     public AnimationCurve HpSpeedRelation;
     public AnimationCurve DeathDistanceBonus;
+    public AnimationCurve EmptyTankBonus;
     public Transform SliderSlot;
     public Transform MoveTarget;
 
@@ -64,8 +65,12 @@ public class Kamyon : MonoBehaviour
         if (coll.gameObject.layer == _batteryLayer)
         {
             var deathDist = Vector3.Distance(transform.position.WithY(0), _death.transform.position.WithY(0));
-            var t = DeathDistanceBonus.Evaluate(Mathf.Clamp01(deathDist / MaxDeathBonusDistance));
-            _hp += MaxHp * 0.1f + t * 0.1f;
+            var distanceCoeff = DeathDistanceBonus.Evaluate(Mathf.Clamp01(deathDist / MaxDeathBonusDistance));
+            var emptyTankCoeff = EmptyTankBonus.Evaluate(_hp / MaxHp);
+            _hp += MaxHp * 0.1f // Base
+                   + distanceCoeff * 0.1f // The closer the death is the more this fills up the tank
+                   + emptyTankCoeff * 0.15f;
+
             Destroy(coll.gameObject);
         }
     }
