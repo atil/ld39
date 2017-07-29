@@ -16,8 +16,8 @@ public class BatterySpawner : MonoBehaviour
         _spawnTimer += Time.deltaTime;
         if (_spawnTimer > _nextSpawnTime)
         {
-            var go = Instantiate(BatteryPrefab,
-                RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length - 1)].bounds), Quaternion.identity);
+            Instantiate(BatteryPrefab,
+                RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length)].bounds), Quaternion.identity);
             _spawnTimer = 0;
             _nextSpawnTime = Random.Range(1f, 1f);
         }

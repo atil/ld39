@@ -12,11 +12,13 @@ public class Kamyon : MonoBehaviour
 
     private float _hp;
     private Slider _hpSlider;
+    private int _batteryLayer;
 
     void Start()
     {
         _hp = 100;
         _hpSlider = FindObjectOfType<Ui>().KamyonHpSlider;
+        _batteryLayer = LayerMask.NameToLayer("Battery");
     }
 
     void Update()
@@ -39,4 +41,12 @@ public class Kamyon : MonoBehaviour
         _hpSlider.normalizedValue = _hp / 100f;
     }
 
+    void OnTriggerEnter(Collider coll)
+    {
+        if (coll.gameObject.layer == _batteryLayer)
+        {
+            _hp += 10f;
+            Destroy(coll.gameObject);
+        }
+    }
 }
