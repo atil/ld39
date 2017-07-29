@@ -6,6 +6,9 @@ using UnityEngine;
 public class FpsController : MonoBehaviour
 {
     public bool InputEnabled { get; set; }
+    public bool MouseLookEnabled { get; set; }
+    public bool MoveEnabled { get; set; }
+    public Vector3 Velocity { get { return _velocity; } }
 
     // It's better for camera to be a seperate object, not under the controller
     // Since we update the position in FixedUpdate(), it would cause a jittery vision
@@ -81,6 +84,9 @@ public class FpsController : MonoBehaviour
         _transform = transform;
         _mouseLook = new MouseLook(_camTransform);
         InputEnabled = true;
+        MouseLookEnabled = true;
+        MoveEnabled = true;
+        Cursor.lockState = CursorLockMode.Locked; 
     }
 
     // All logic, including controller displacement, happens here
@@ -139,7 +145,6 @@ public class FpsController : MonoBehaviour
     // We also bring the camera (which is a separate entity) to the controller position here
     private void Update()
     {
-        Cursor.lockState = CursorLockMode.Locked; // Keep doing this. We don't want cursor anywhere just yet
 
         var dt = Time.deltaTime;
 
@@ -159,8 +164,11 @@ public class FpsController : MonoBehaviour
         }
         _camTransform.position = Vector3.Lerp(_camTransform.position, _transform.position, dt * 200f);
 
-        var mouseLookForward = _mouseLook.Update();
-        _transform.rotation = Quaternion.LookRotation(mouseLookForward.WithY(0), Vector3.up); // Only rotate vertically
+        if (MouseLookEnabled)
+        {
+            var mouseLookForward = _mouseLook.Update();
+            _transform.rotation = Quaternion.LookRotation(mouseLookForward.WithY(0), Vector3.up); // Only rotate vertically
+        }
     }
 
     private void Accelerate(ref Vector3 playerVelocity, Vector3 accelDir, float maxSpeedAlongOneDimension, float accelCoeff, float dt)
@@ -304,5 +312,9 @@ public class FpsController : MonoBehaviour
     public void ForceVelocity(Vector3 v)
     {
         _velocity = v;
+        _transform.position += Vector3.up;
+        _isGroundedInPrevFrame = false;
+        _isGroundedInThisFrame = false;
+        _moveInput = Vector3.zero;
     }
 }

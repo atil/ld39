@@ -22,7 +22,7 @@ public class Death : MonoBehaviour
     void Update ()
     {
         var moveDir = (MoveTarget.position - transform.position).normalized;
-        transform.position += moveDir * Kamyon.MaxSpeed * 0.7f * Time.deltaTime;
+        transform.position += moveDir * Kamyon.MaxSpeed * Time.deltaTime;
 
         Text.position = TextSlot.position;
     }

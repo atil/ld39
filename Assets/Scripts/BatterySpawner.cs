@@ -20,7 +20,7 @@ public class BatterySpawner : MonoBehaviour
             var go = Instantiate(BatteryPrefab,
                 RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length)].bounds), Quaternion.identity);
             _spawnTimer = 0;
-            _nextSpawnTime = Random.Range(3f, 5f);
+            _nextSpawnTime = Random.Range(5f, 10f);
 
             StartCoroutine(BatteryLifeTime(go));
         }

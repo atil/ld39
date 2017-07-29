@@ -10,30 +10,31 @@ public class Kamyon : MonoBehaviour
     public const float HpDegenRate = 2f;
     public const float MaxSpeed = 0.5f;
     public const float MaxHp = 100f;
+    public const float MaxDeathBonusDistance = 20f;
 
     public AnimationCurve HpSpeedRelation;
+    public AnimationCurve DeathDistanceBonus;
     public Transform SliderSlot;
     public Transform MoveTarget;
 
     private float _hp;
     private Slider _hpSlider;
     private int _batteryLayer;
+    private Death _death;
 
     void Start()
     {
         _hp = MaxHp;
         _hpSlider = FindObjectOfType<Ui>().KamyonHpSlider;
         _batteryLayer = LayerMask.NameToLayer("Battery");
+        _death = FindObjectOfType<Death>();
     }
 
     void Update()
     {
         _hp -= Time.deltaTime * HpDegenRate;
 
-        if (_hp < 0)
-        {
-            _hp = 0;
-        }
+        _hp = Mathf.Clamp(_hp, 0f, MaxHp);
 
         var camToKamyon = transform.position - Camera.main.transform.position;
         var camForward = Camera.main.transform.forward;
@@ -53,7 +54,7 @@ public class Kamyon : MonoBehaviour
         if (_hp > 0)
         {
             var moveDir = (MoveTarget.position - transform.position).normalized;
-            transform.Translate(moveDir * HpSpeedRelation.Evaluate(_hp / MaxHp) * Time.deltaTime);
+            transform.position += moveDir * HpSpeedRelation.Evaluate(_hp / MaxHp) * MaxSpeed * Time.deltaTime;
         }
 
     }
@@ -62,7 +63,9 @@ public class Kamyon : MonoBehaviour
     {
         if (coll.gameObject.layer == _batteryLayer)
         {
-            _hp += MaxHp * 0.15f;
+            var deathDist = Vector3.Distance(transform.position.WithY(0), _death.transform.position.WithY(0));
+            var t = DeathDistanceBonus.Evaluate(Mathf.Clamp01(deathDist / MaxDeathBonusDistance));
+            _hp += MaxHp * 0.1f + t * 0.1f;
             Destroy(coll.gameObject);
         }
     }

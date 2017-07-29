@@ -8,10 +8,12 @@ public class Grabber : MonoBehaviour
 
     private int _batteryLayer;
     private Transform _grabbedBattery;
+    private FpsController _controller;
 
     void Start()
     {
         _batteryLayer = LayerMask.NameToLayer("Battery");
+        _controller = FindObjectOfType<FpsController>();
     }
 
     void Update()
@@ -22,13 +24,15 @@ public class Grabber : MonoBehaviour
             {
                 _grabbedBattery.transform.position = transform.position + transform.forward.WithY(0);
                 _grabbedBattery.gameObject.SetActive(true);
+                _grabbedBattery.GetComponent<Rigidbody>().velocity = _controller.Velocity.magnitude * Camera.main.transform.forward;
                 FakeBattery.SetActive(false);
             }
             else
             {
                 var midScreen = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
                 RaycastHit hit;
-                if (Physics.SphereCast(Camera.main.ScreenPointToRay(midScreen), 0.3f, out hit, 1f, 1 << _batteryLayer))
+                var reachDist = Mathf.Max(_controller.Velocity.magnitude / 4f, 1f);
+                if (Physics.SphereCast(Camera.main.ScreenPointToRay(midScreen), 0.3f, out hit, reachDist, 1 << _batteryLayer))
                 {
                     _grabbedBattery = hit.transform;
                     _grabbedBattery.gameObject.SetActive(false);
@@ -37,7 +41,5 @@ public class Grabber : MonoBehaviour
             }
 
         }
-
-
     }
 }
