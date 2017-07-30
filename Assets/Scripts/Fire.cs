@@ -14,12 +14,15 @@ public class Fire : MonoBehaviour
     
     private MinionSpawner _minionSpawner;
     private bool _isInCooldown;
-    private int _playerLayer;
+    private int _fireLayerMask;
 
     void Start()
     {
         _minionSpawner = FindObjectOfType<MinionSpawner>();
-        _playerLayer = LayerMask.NameToLayer("Player");
+        var playerLayer = LayerMask.NameToLayer("Player");
+        var volumeLayer = LayerMask.NameToLayer("SpawnVolume");
+
+        _fireLayerMask = ~((1 << playerLayer) | (1 << volumeLayer));
     }
 
 	void Update ()
@@ -29,7 +32,7 @@ public class Fire : MonoBehaviour
 	        var midScreen = new Vector3(Screen.width / 2f, Screen.height / 2f, 0);
 	        var endPos = transform.forward * 1000f;
 
-            var hits = Physics.SphereCastAll(Camera.main.ScreenPointToRay(midScreen), 0.2f, 1000f, ~(1 << _playerLayer));
+            var hits = Physics.SphereCastAll(Camera.main.ScreenPointToRay(midScreen), 0.2f, 1000f, _fireLayerMask);
 	        foreach (var hit in hits)
 	        {
 	            if (hit.transform.GetComponent<Minion>() != null)

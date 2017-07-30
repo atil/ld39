@@ -9,6 +9,7 @@ public class Ui : MonoBehaviour
     public GameObject Crosshair;
 
     public GameObject GameOverText;
+    public GameObject WinText;
     public GameObject LoadingScreen;
     public GameObject ReplayButton;
 
@@ -27,5 +28,14 @@ public class Ui : MonoBehaviour
         {
             LoadingScreen.SetActive(true);
         }
+    }
+
+    public void Win()
+    {
+        KamyonHpSlider.gameObject.SetActive(false);
+        Crosshair.SetActive(false);
+        WinText.SetActive(true);
+        ReplayButton.SetActive(true);
+        Cursor.lockState = CursorLockMode.None;
     }
 }

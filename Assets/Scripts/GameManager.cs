@@ -13,17 +13,34 @@ public class GameManager : MonoBehaviour
     public BatterySpawner BatterySpawner;
     public Ui Ui;
 
-    public void GameOver()
+    private bool _isGameEnded;
+
+    public void EndGame(bool isWon)
     {
+        if (_isGameEnded)
+        {
+            return;
+        }
+        _isGameEnded = true;
+
         FpsController.InputEnabled = false;
         FpsController.MouseLookEnabled = false;
         FpsController.MoveEnabled = false;
-        FpsController.ForceVelocity((Death.transform.forward * 0.75f + Vector3.up * 1.5f) * 40f);
-        Ui.GameOver();
         BatterySpawner.enabled = false;
         Death.enabled = false;
         Kamyon.enabled = false;
+
+        if (isWon)
+        {
+            Ui.Win();
+        }
+        else
+        {
+            FpsController.ForceVelocity((Death.transform.forward * 0.75f + Vector3.up * 1.5f) * 40f);
+            Ui.GameOver();
+        }
     }
+
 
     public void OnReplayClicked()
     {

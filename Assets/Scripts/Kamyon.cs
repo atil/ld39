@@ -20,6 +20,7 @@ public class Kamyon : MonoBehaviour
 
     private int _batteryLayer;
     private int _minionLayer;
+    private int _goalLayer;
     private float _hp;
     private Slider _hpSlider;
     private Death _death;
@@ -30,6 +31,7 @@ public class Kamyon : MonoBehaviour
         _hpSlider = FindObjectOfType<Ui>().KamyonHpSlider;
         _batteryLayer = LayerMask.NameToLayer("Battery");
         _minionLayer = LayerMask.NameToLayer("Minion");
+        _goalLayer = LayerMask.NameToLayer("Goal");
         _death = FindObjectOfType<Death>();
     }
 
@@ -79,8 +81,12 @@ public class Kamyon : MonoBehaviour
         if (coll.gameObject.layer == _minionLayer)
         {
             Destroy(coll.gameObject);
-            FindObjectOfType<GameManager>().GameOver();
+            FindObjectOfType<GameManager>().EndGame(false);
         }
 
+        if (coll.gameObject.layer == _goalLayer)
+        {
+            FindObjectOfType<GameManager>().EndGame(true);
+        }
     }
 }
