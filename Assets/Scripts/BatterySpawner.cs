@@ -54,7 +54,7 @@ public class BatterySpawner : MonoBehaviour
         }
     }
 
-    private Vector3 RandomPointInVolume(Bounds bnds)
+    public static Vector3 RandomPointInVolume(Bounds bnds)
     {
         var center = bnds.center;
         var x = Random.Range(-bnds.size.x, bnds.size.x);

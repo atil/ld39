@@ -18,9 +18,10 @@ public class Kamyon : MonoBehaviour
     public Transform SliderSlot;
     public Transform MoveTarget;
 
+    private int _batteryLayer;
+    private int _minionLayer;
     private float _hp;
     private Slider _hpSlider;
-    private int _batteryLayer;
     private Death _death;
 
     void Start()
@@ -28,6 +29,7 @@ public class Kamyon : MonoBehaviour
         _hp = MaxHp;
         _hpSlider = FindObjectOfType<Ui>().KamyonHpSlider;
         _batteryLayer = LayerMask.NameToLayer("Battery");
+        _minionLayer = LayerMask.NameToLayer("Minion");
         _death = FindObjectOfType<Death>();
     }
 
@@ -67,11 +69,18 @@ public class Kamyon : MonoBehaviour
             var deathDist = Vector3.Distance(transform.position.WithY(0), _death.transform.position.WithY(0));
             var distanceCoeff = DeathDistanceBonus.Evaluate(Mathf.Clamp01(deathDist / MaxDeathBonusDistance));
             var emptyTankCoeff = EmptyTankBonus.Evaluate(_hp / MaxHp);
-            _hp += MaxHp * 0.1f // Base
+            _hp += MaxHp * 0.2f // Base
                    + distanceCoeff * 0.1f // The closer the death is the more this fills up the tank
                    + emptyTankCoeff * 0.15f;
 
             Destroy(coll.gameObject);
         }
+
+        if (coll.gameObject.layer == _minionLayer)
+        {
+            Destroy(coll.gameObject);
+            FindObjectOfType<GameManager>().GameOver();
+        }
+
     }
 }

@@ -18,7 +18,7 @@ public class GameManager : MonoBehaviour
         FpsController.InputEnabled = false;
         FpsController.MouseLookEnabled = false;
         FpsController.MoveEnabled = false;
-        FpsController.ForceVelocity((Death.transform.forward * 0.5f + Vector3.up * 2) * 40f);
+        FpsController.ForceVelocity((Death.transform.forward * 0.75f + Vector3.up * 1.5f) * 40f);
         Ui.GameOver();
         BatterySpawner.enabled = false;
         Death.enabled = false;
