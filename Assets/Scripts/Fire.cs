@@ -75,6 +75,14 @@ public class Fire : MonoBehaviour
 
             yield return null;
         }
+
+        var c1 = LineColor;
+        c1.a = 0f;
+
+        Line.startColor = c1;
+        Line.endColor = c1;
+
+
         _isInCooldown = false;
 
     }
