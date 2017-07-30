@@ -12,6 +12,7 @@ public class GameManager : MonoBehaviour
     public Death Death;
     public BatterySpawner BatterySpawner;
     public Ui Ui;
+    public Fire Fire;
 
     private bool _isGameEnded;
 
@@ -29,6 +30,7 @@ public class GameManager : MonoBehaviour
         BatterySpawner.enabled = false;
         Death.enabled = false;
         Kamyon.enabled = false;
+        Fire.enabled = false;
 
         if (isWon)
         {
