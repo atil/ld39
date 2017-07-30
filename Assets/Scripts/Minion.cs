@@ -16,5 +16,7 @@ public class Minion : MonoBehaviour
 	{
 	    var dir = (_kamyon.transform.position - transform.position).normalized.WithY(0f);
 	    transform.position += dir * Speed * Time.deltaTime;
+
+        transform.LookAt(_kamyon.transform.position.WithY(0f));
 	}
 }

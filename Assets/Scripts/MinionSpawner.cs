@@ -17,7 +17,7 @@ public class MinionSpawner : MonoBehaviour
 
 	    if (_spawnTimer > _nextSpawnTime)
 	    {
-	        var pos = BatterySpawner.RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length)].bounds).WithY(1f);
+	        var pos = BatterySpawner.RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length)].bounds).WithY(0f);
             var go = Instantiate(MinionPrefab, pos, Quaternion.identity);
             _minions.Add(go.GetComponent<Minion>());
 
