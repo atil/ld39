@@ -8,6 +8,11 @@ public class Death : MonoBehaviour
     public Transform TextSlot;
     public Transform Text;
 
+    public Transform Particles;
+    public Transform ParticlesSlot;
+    public Transform GroundParticles;
+    public Transform GroundParticlesSlot;
+
     private int _batteryLayer;
     private int _kamyonLayer;
     private int _playerLayer;
@@ -25,6 +30,8 @@ public class Death : MonoBehaviour
         transform.position += moveDir * Kamyon.MaxSpeed * Time.deltaTime;
 
         Text.position = TextSlot.position;
+        Particles.position = ParticlesSlot.position;
+        GroundParticles.position = GroundParticlesSlot.position;
     }
 
     void OnTriggerEnter(Collider coll)
