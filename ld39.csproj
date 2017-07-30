@@ -90,6 +90,7 @@
     <Compile Include="Assets\Scripts\Fire.cs" />
     <Compile Include="Assets\Scripts\FpsController.cs" />
     <Compile Include="Assets\Scripts\GameManager.cs" />
+    <Compile Include="Assets\Scripts\Goal.cs" />
     <Compile Include="Assets\Scripts\Grabber.cs" />
     <Compile Include="Assets\Scripts\Kamyon.cs" />
     <Compile Include="Assets\Scripts\Minion.cs" />

@@ -4,8 +4,11 @@ using UnityEngine;
 
 public class Minion : MonoBehaviour
 {
-    public const float Speed = 5f;
+    public const float BaseSpeed = 5f;
+    public AnimationCurve SpeedProgressRelation;
+
     private Kamyon _kamyon;
+    private float _difficulty = 1f;
 
     void Start()
     {
@@ -15,8 +18,13 @@ public class Minion : MonoBehaviour
 	void Update ()
 	{
 	    var dir = (_kamyon.transform.position - transform.position).normalized.WithY(0f);
-	    transform.position += dir * Speed * Time.deltaTime;
+	    transform.position += dir * BaseSpeed * _difficulty * Time.deltaTime;
 
         transform.LookAt(_kamyon.transform.position.WithY(0f));
 	}
+
+    public void SetSpeed(float normalizedKamyonProgress)
+    {
+        _difficulty = 1 + SpeedProgressRelation.Evaluate(normalizedKamyonProgress) * 0.7f;
+    }
 }

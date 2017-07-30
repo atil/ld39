@@ -4,12 +4,24 @@ using UnityEngine;
 
 public class MinionSpawner : MonoBehaviour
 {
+    public const float MaxSpawnDuration = 5f;
+    public const float MinSpawnDuration = 2.5f;
+
     public GameObject MinionPrefab;
     public BoxCollider[] SpawnVolumes;
+    public Kamyon Kamyon;
+    public Goal Goal;
+    public AnimationCurve ProgressSpawnTimeRelation;
 
     private float _spawnTimer;
     private float _nextSpawnTime;
     private readonly List<Minion> _minions = new List<Minion>();
+    private float _initialDistance;
+
+    void Start()
+    {
+        _initialDistance = GetRemainingDistance();
+    }
 
 	void Update ()
 	{
@@ -17,12 +29,19 @@ public class MinionSpawner : MonoBehaviour
 
 	    if (_spawnTimer > _nextSpawnTime)
 	    {
-	        var pos = BatterySpawner.RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length)].bounds).WithY(0f);
+            var pos = BatterySpawner.RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length)].bounds).WithY(0f);
             var go = Instantiate(MinionPrefab, pos, Quaternion.identity);
             _minions.Add(go.GetComponent<Minion>());
 
+	        var t = ProgressSpawnTimeRelation.Evaluate(GetRemainingDistance() / _initialDistance);
+	        var t1 = Mathf.Lerp(MaxSpawnDuration, MinSpawnDuration, t);
+            _nextSpawnTime = Random.Range(t1, t1 * 1.5f);
 	        _spawnTimer = 0;
-	        _nextSpawnTime = Random.Range(5f, 7.5f);
+	    }
+
+	    foreach (var minion in _minions)
+	    {
+	        minion.SetSpeed(GetRemainingDistance() / _initialDistance);
 	    }
 	}
 
@@ -38,5 +57,10 @@ public class MinionSpawner : MonoBehaviour
     {
         _minions.Remove(minion);
         Destroy(minion.gameObject);
+    }
+
+    private float GetRemainingDistance()
+    {
+        return Vector3.Distance(Kamyon.transform.position, Goal.transform.position);
     }
 }
