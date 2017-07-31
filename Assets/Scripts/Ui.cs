@@ -6,6 +6,9 @@ using UnityEngine.UI;
 
 public class Ui : MonoBehaviour
 {
+    public Image StartOverlay;
+    public AnimationCurve OverlayDisappear;
+
     public Slider KamyonHpSlider;
     public GameObject Crosshair;
 
@@ -14,11 +17,15 @@ public class Ui : MonoBehaviour
     public GameObject LoadingScreen;
     public GameObject ReplayButton;
 
-    
     public Text ReasonText;
     public Image GameOverOverlay;
     public Image WinOverlay;
     public AnimationCurve OverlayAppear;
+
+    void Start()
+    {
+        StartCoroutine(OverlayAppearCoroutine(StartOverlay, OverlayDisappear));
+    }
 
     public void GameOver(EndGameReason reason)
     {
@@ -39,11 +46,11 @@ public class Ui : MonoBehaviour
 
         if (reason != EndGameReason.Win)
         {
-            StartCoroutine(OverlayAppearCoroutine(GameOverOverlay));
+            StartCoroutine(OverlayAppearCoroutine(GameOverOverlay, OverlayAppear));
         }
         else
         {
-            StartCoroutine(OverlayAppearCoroutine(WinOverlay));
+            StartCoroutine(OverlayAppearCoroutine(WinOverlay, OverlayAppear));
         }
 
         switch (reason)
@@ -66,7 +73,7 @@ public class Ui : MonoBehaviour
         }
     }
 
-    private IEnumerator OverlayAppearCoroutine(Image img)
+    public static IEnumerator OverlayAppearCoroutine(Image img, AnimationCurve animCurve)
     {
         const float duration = 1f;
         var timer = 0f;
@@ -74,7 +81,7 @@ public class Ui : MonoBehaviour
         {
             timer += Time.deltaTime;
             var c = img.color;
-            c.a = OverlayAppear.Evaluate(timer / duration);
+            c.a = animCurve.Evaluate(timer / duration);
             img.color = c;
             yield return null;
         }

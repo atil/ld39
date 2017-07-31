@@ -14,7 +14,7 @@ public class MinionSpawner : MonoBehaviour
     public AnimationCurve ProgressSpawnTimeRelation;
 
     private float _spawnTimer;
-    private float _nextSpawnTime;
+    private float _nextSpawnTime = 3f;
     private readonly List<Minion> _minions = new List<Minion>();
     private float _initialDistance;
 

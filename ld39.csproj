@@ -93,6 +93,7 @@
     <Compile Include="Assets\Scripts\Goal.cs" />
     <Compile Include="Assets\Scripts\Grabber.cs" />
     <Compile Include="Assets\Scripts\Kamyon.cs" />
+    <Compile Include="Assets\Scripts\Menus\Menu.cs" />
     <Compile Include="Assets\Scripts\Minion.cs" />
     <Compile Include="Assets\Scripts\MinionSpawner.cs" />
     <Compile Include="Assets\Scripts\MouseLook.cs" />
