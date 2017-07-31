@@ -55,6 +55,7 @@ public class MinionSpawner : MonoBehaviour
 
     public void KillMinion(Minion minion)
     {
+        minion.PlayDeathClip();
         _minions.Remove(minion);
         Destroy(minion.gameObject);
     }

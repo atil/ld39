@@ -16,6 +16,8 @@ public class Fire : MonoBehaviour
     private bool _isInCooldown;
     private int _fireLayerMask;
 
+    public AudioSource AudioSource;
+
     void Start()
     {
         _minionSpawner = FindObjectOfType<MinionSpawner>();
@@ -52,6 +54,8 @@ public class Fire : MonoBehaviour
             });
 
 	        StartCoroutine(AfterFire());
+
+	        AudioSource.Play();
 	    }
 	}
 

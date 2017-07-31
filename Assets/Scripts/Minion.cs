@@ -7,6 +7,8 @@ public class Minion : MonoBehaviour
     public const float BaseSpeed = 5f;
     public AnimationCurve SpeedProgressRelation;
 
+    public AudioClip[] DeathClips;
+
     private Kamyon _kamyon;
     private float _difficulty = 1f;
 
@@ -26,5 +28,10 @@ public class Minion : MonoBehaviour
     public void SetSpeed(float normalizedKamyonProgress)
     {
         _difficulty = 1 + SpeedProgressRelation.Evaluate(normalizedKamyonProgress) * 0.7f;
+    }
+
+    public void PlayDeathClip()
+    {
+        AudioSource.PlayClipAtPoint(DeathClips[Random.Range(0, DeathClips.Length)], transform.position);
     }
 }
