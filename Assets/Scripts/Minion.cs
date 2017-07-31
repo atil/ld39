@@ -34,4 +34,5 @@ public class Minion : MonoBehaviour
     {
         AudioSource.PlayClipAtPoint(DeathClips[Random.Range(0, DeathClips.Length)], transform.position);
     }
+    
 }

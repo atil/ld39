@@ -64,6 +64,10 @@ public class GameManager : MonoBehaviour
 
             for (var i = 0; i < allAudio.Length; i++)
             {
+                if (allAudio[i] == null)
+                {
+                    continue;
+                }
                 allAudio[i].volume = Mathf.Lerp(0f, initials[i], Silence.Evaluate(timer / duration));
             }
 

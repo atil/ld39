@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class MinionSpawner : MonoBehaviour
 {
-    public const float MaxSpawnDuration = 5f;
-    public const float MinSpawnDuration = 2.5f;
+    public const float MaxSpawnDuration = 4f;
+    public const float MinSpawnDuration = 2f;
 
     public GameObject MinionPrefab;
+    public GameObject ExplosionPrefab;
     public BoxCollider[] SpawnVolumes;
     public Kamyon Kamyon;
     public Goal Goal;
@@ -58,6 +59,9 @@ public class MinionSpawner : MonoBehaviour
     {
         minion.PlayDeathClip();
         _minions.Remove(minion);
+        var expGo = Instantiate(ExplosionPrefab, minion.transform.position + Vector3.up, Quaternion.identity);
+        expGo.transform.localScale *= 3f;
+        Destroy(expGo, 2);
         Destroy(minion.gameObject);
     }
 
