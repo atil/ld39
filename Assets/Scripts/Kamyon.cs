@@ -18,6 +18,9 @@ public class Kamyon : MonoBehaviour
     public Transform SliderSlot;
     public Transform MoveTarget;
 
+    public AudioSource AudioSource;
+    public AudioClip BatteryAddClip;
+
     private int _batteryLayer;
     private int _minionLayer;
     private int _goalLayer;
@@ -76,6 +79,8 @@ public class Kamyon : MonoBehaviour
                    + emptyTankCoeff * 0.15f;
 
             Destroy(coll.gameObject);
+
+            AudioSource.PlayOneShot(BatteryAddClip);
         }
 
         if (coll.gameObject.layer == _minionLayer)
