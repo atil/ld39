@@ -10,6 +10,13 @@ public class FpsController : MonoBehaviour
     public bool MoveEnabled { get; set; }
     public Vector3 Velocity { get { return _velocity; } }
 
+    public AudioClip[] Footsteps;
+    public AudioClip JumpClip;
+    public AudioClip LandClip;
+    public AudioSource AudioSource;
+
+    private float _stepClipDistanceCounter;
+
     // It's better for camera to be a seperate object, not under the controller
     // Since we update the position in FixedUpdate(), it would cause a jittery vision
     [SerializeField]
@@ -86,7 +93,7 @@ public class FpsController : MonoBehaviour
         InputEnabled = true;
         MouseLookEnabled = true;
         MoveEnabled = true;
-        Cursor.lockState = CursorLockMode.Locked; 
+        Cursor.lockState = CursorLockMode.Locked;
     }
 
     // All logic, including controller displacement, happens here
@@ -94,11 +101,17 @@ public class FpsController : MonoBehaviour
     {
         var dt = Time.fixedDeltaTime;
 
+        var collisionDisplacement = ResolveCollisions(ref _velocity);
+
+        var justLanded = !_isGroundedInPrevFrame && _isGroundedInThisFrame;
         var wishDir = _camTransform.TransformDirectionHorizontal(_moveInput); // We want to go in this direction
 
         if (_isGroundedInThisFrame) // Ground move
         {
-            var justLanded = !_isGroundedInPrevFrame && _isGroundedInThisFrame;
+            if (justLanded)
+            {
+                AudioSource.PlayOneShot(LandClip);
+            }
 
             // Don't apply friction if just landed or about to jump
             // TODO: Actually this can be extended to multiple frames, to make it easier
@@ -110,9 +123,18 @@ public class FpsController : MonoBehaviour
 
             Accelerate(ref _velocity, wishDir, MaxSpeedAlongOneDimension, GroundAccelerationCoeff, dt);
 
+            if (_stepClipDistanceCounter > 2f && !justLanded)
+            {
+                _stepClipDistanceCounter = 0f;
+
+                AudioSource.PlayOneShot(Footsteps[Random.Range(0, Footsteps.Length)]);
+            }
+
             _velocity.y = 0; // Ground movement always hard-resets vertical displacement
             if (_isGonnaJump)
             {
+                AudioSource.PlayOneShot(JumpClip);
+
                 _isGonnaJump = false;
                 _velocity.y = JumpStrength;
             }
@@ -133,10 +155,12 @@ public class FpsController : MonoBehaviour
             _velocity.y -= Gravity * dt;
         }
 
+        var oldPos = _transform.position;
         _transform.position += _velocity * dt; // Actual displacement
-
-        var collisionDisplacement = ResolveCollisions(ref _velocity);
         _transform.position += collisionDisplacement; // Pushing out of environment
+
+
+        _stepClipDistanceCounter += (_velocity * dt).magnitude;
 
         _isGroundedInPrevFrame = _isGroundedInThisFrame;
     }
@@ -160,7 +184,7 @@ public class FpsController : MonoBehaviour
             {
                 _isGonnaJump = false;
             }
-    
+
         }
         _camTransform.position = Vector3.Lerp(_camTransform.position, _transform.position, dt * 200f);
 
@@ -317,4 +341,5 @@ public class FpsController : MonoBehaviour
         _isGroundedInThisFrame = false;
         _moveInput = Vector3.zero;
     }
+
 }
