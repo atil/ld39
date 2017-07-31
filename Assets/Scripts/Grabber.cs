@@ -6,6 +6,10 @@ public class Grabber : MonoBehaviour
 {
     public GameObject FakeBattery;
 
+    public AudioSource AudioSource;
+    public AudioClip PickupClip;
+    public AudioClip ThrowClip;
+
     private int _batteryLayer;
     private Transform _grabbedBattery;
     private FpsController _controller;
@@ -26,6 +30,8 @@ public class Grabber : MonoBehaviour
                 _grabbedBattery.gameObject.SetActive(true);
                 _grabbedBattery.GetComponent<Rigidbody>().velocity = _controller.Velocity.magnitude * Camera.main.transform.forward;
                 FakeBattery.SetActive(false);
+
+                AudioSource.PlayOneShot(ThrowClip);
             }
             else
             {
@@ -37,6 +43,8 @@ public class Grabber : MonoBehaviour
                     _grabbedBattery = hit.transform;
                     _grabbedBattery.gameObject.SetActive(false);
                     FakeBattery.SetActive(true);
+
+                    AudioSource.PlayOneShot(PickupClip);
                 }
             }
 
