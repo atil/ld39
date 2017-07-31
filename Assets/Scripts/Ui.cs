@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,13 +14,70 @@ public class Ui : MonoBehaviour
     public GameObject LoadingScreen;
     public GameObject ReplayButton;
 
-    public void GameOver()
+    
+    public Text ReasonText;
+    public Image GameOverOverlay;
+    public Image WinOverlay;
+    public AnimationCurve OverlayAppear;
+
+    public void GameOver(EndGameReason reason)
     {
         KamyonHpSlider.gameObject.SetActive(false);
         Crosshair.SetActive(false);
-        GameOverText.SetActive(true);
         ReplayButton.SetActive(true);
+        ReasonText.gameObject.SetActive(true);
         Cursor.lockState = CursorLockMode.None;
+
+        if (reason == EndGameReason.Win)
+        {
+            WinText.SetActive(true);
+        }
+        else
+        {
+            GameOverText.SetActive(true);
+        }
+
+        if (reason != EndGameReason.Win)
+        {
+            StartCoroutine(OverlayAppearCoroutine(GameOverOverlay));
+        }
+        else
+        {
+            StartCoroutine(OverlayAppearCoroutine(WinOverlay));
+        }
+
+        switch (reason)
+        {
+            case EndGameReason.None:
+                break;
+            case EndGameReason.KamyonWall:
+                ReasonText.text = "TRUCK IS SWALLOWED BY THE STORM";
+                break;
+            case EndGameReason.PlayerWall:
+                ReasonText.text = "YOU ARE LOST IN THE STORM";
+                break;
+            case EndGameReason.KamyonMinion:
+                ReasonText.text = "TRUCK IS BLOWN AWAY";
+                break;
+            case EndGameReason.Win:
+                break;
+            default:
+                throw new ArgumentOutOfRangeException("reason", reason, null);
+        }
+    }
+
+    private IEnumerator OverlayAppearCoroutine(Image img)
+    {
+        const float duration = 1f;
+        var timer = 0f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+            var c = img.color;
+            c.a = OverlayAppear.Evaluate(timer / duration);
+            img.color = c;
+            yield return null;
+        }
     }
 
     public void OnClickReplay()
@@ -28,14 +86,5 @@ public class Ui : MonoBehaviour
         {
             LoadingScreen.SetActive(true);
         }
-    }
-
-    public void Win()
-    {
-        KamyonHpSlider.gameObject.SetActive(false);
-        Crosshair.SetActive(false);
-        WinText.SetActive(true);
-        ReplayButton.SetActive(true);
-        Cursor.lockState = CursorLockMode.None;
     }
 }

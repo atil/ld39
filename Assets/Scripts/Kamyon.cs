@@ -7,8 +7,8 @@ using UnityEngine.UI;
 
 public class Kamyon : MonoBehaviour
 {
-    public const float HpDegenRate = 2f;
-    public const float MaxSpeed = 0.5f;
+    public const float HpDegenRate = 0f;
+    public const float MaxSpeed = 10.5f;
     public const float MaxHp = 100f;
     public const float MaxDeathBonusDistance = 20f;
 
@@ -89,15 +89,15 @@ public class Kamyon : MonoBehaviour
 
         if (coll.gameObject.layer == _minionLayer)
         {
-            AudioSource.PlayOneShot(ExplodeAudioClip, 0.5f);
+            AudioSource.PlayOneShot(ExplodeAudioClip, 0.3f);
 
             Destroy(coll.gameObject);
-            FindObjectOfType<GameManager>().EndGame(false);
+            FindObjectOfType<GameManager>().EndGame(EndGameReason.KamyonMinion);
         }
 
         if (coll.gameObject.layer == _goalLayer)
         {
-            FindObjectOfType<GameManager>().EndGame(true);
+            FindObjectOfType<GameManager>().EndGame(EndGameReason.Win);
         }
     }
 }

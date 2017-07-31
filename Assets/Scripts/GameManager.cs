@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
+public enum EndGameReason
+{
+    None, KamyonWall, PlayerWall, KamyonMinion, Win
+}
 
 public class GameManager : MonoBehaviour
 {
@@ -15,9 +21,11 @@ public class GameManager : MonoBehaviour
     public Ui Ui;
     public Fire Fire;
 
+    public AnimationCurve Silence;
+
     private bool _isGameEnded;
 
-    public void EndGame(bool isWon)
+    public void EndGame(EndGameReason reason)
     {
         if (_isGameEnded)
         {
@@ -34,17 +42,41 @@ public class GameManager : MonoBehaviour
         Fire.enabled = false;
         MinionSpawner.DeactivateMinions();
 
-        if (isWon)
-        {
-            Ui.Win();
-        }
-        else
+        Ui.GameOver(reason);
+        if (reason == EndGameReason.KamyonMinion)
         {
             FpsController.ForceVelocity((Death.transform.forward * 0.75f + Vector3.up * 1.5f) * 40f);
-            Ui.GameOver();
         }
+        StartCoroutine(WaitAndDisablePlayer());
+        StartCoroutine(SilenceAllAudio());
     }
 
+    private IEnumerator SilenceAllAudio()
+    {
+        var allAudio = FindObjectsOfType<AudioSource>();
+        var initials = allAudio.Select(x => x.volume).ToList();
+
+        const float duration = 1f;
+        var timer = 0f;
+        while (timer < duration)
+        {
+            timer += Time.deltaTime;
+
+            for (var i = 0; i < allAudio.Length; i++)
+            {
+                allAudio[i].volume = Mathf.Lerp(0f, initials[i], Silence.Evaluate(timer / duration));
+            }
+
+            yield return null;
+        }
+
+    }
+
+    private IEnumerator WaitAndDisablePlayer()
+    {
+        yield return new WaitForSeconds(1f);
+        FpsController.enabled = false;
+    }
 
     public void OnReplayClicked()
     {

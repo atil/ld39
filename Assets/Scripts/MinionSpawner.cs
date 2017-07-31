@@ -47,6 +47,7 @@ public class MinionSpawner : MonoBehaviour
 
     public void DeactivateMinions()
     {
+        enabled = false;
         foreach (var minion in _minions)
         {
             minion.enabled = false;

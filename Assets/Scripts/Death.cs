@@ -52,12 +52,12 @@ public class Death : MonoBehaviour
 
         if (layer == _kamyonLayer)
         {
-            FindObjectOfType<GameManager>().EndGame(false);
+            FindObjectOfType<GameManager>().EndGame(EndGameReason.KamyonWall);
         }
 
         if (layer == _playerLayer)
         {
-            FindObjectOfType<GameManager>().EndGame(false);
+            FindObjectOfType<GameManager>().EndGame(EndGameReason.PlayerWall);
         }
     }
 }
