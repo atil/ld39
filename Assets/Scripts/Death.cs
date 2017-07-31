@@ -13,15 +13,21 @@ public class Death : MonoBehaviour
     public Transform GroundParticles;
     public Transform GroundParticlesSlot;
 
+    public Transform SfxSlot;
+
     private int _batteryLayer;
     private int _kamyonLayer;
     private int _playerLayer;
+
+    private Transform _cameraTransform;
 
     void Start()
     {
         _batteryLayer = LayerMask.NameToLayer("Battery");
         _kamyonLayer = LayerMask.NameToLayer("Kamyon");
         _playerLayer = LayerMask.NameToLayer("Player");
+
+        _cameraTransform = Camera.main.transform;
     }
 
     void Update ()
@@ -32,6 +38,8 @@ public class Death : MonoBehaviour
         Text.position = TextSlot.position;
         Particles.position = ParticlesSlot.position;
         GroundParticles.position = GroundParticlesSlot.position;
+
+        SfxSlot.position = SfxSlot.position.WithX(_cameraTransform.position.x);
     }
 
     void OnTriggerEnter(Collider coll)

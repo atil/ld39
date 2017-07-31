@@ -15,11 +15,13 @@ public class Kamyon : MonoBehaviour
     public AnimationCurve HpSpeedRelation;
     public AnimationCurve DeathDistanceBonus;
     public AnimationCurve EmptyTankBonus;
+    public AnimationCurve FuelPitchRelation;
     public Transform SliderSlot;
     public Transform MoveTarget;
 
     public AudioSource AudioSource;
     public AudioClip BatteryAddClip;
+    public AudioClip ExplodeAudioClip;
 
     private int _batteryLayer;
     private int _minionLayer;
@@ -41,7 +43,6 @@ public class Kamyon : MonoBehaviour
     void Update()
     {
         _hp -= Time.deltaTime * HpDegenRate;
-
         _hp = Mathf.Clamp(_hp, 0f, MaxHp);
 
         var camToKamyon = transform.position - Camera.main.transform.position;
@@ -59,11 +60,14 @@ public class Kamyon : MonoBehaviour
 
         _hpSlider.normalizedValue = _hp / MaxHp;
 
+
         if (_hp > 0)
         {
             var moveDir = (MoveTarget.position - transform.position).normalized;
             transform.position += moveDir * HpSpeedRelation.Evaluate(_hp / MaxHp) * MaxSpeed * Time.deltaTime;
         }
+
+        AudioSource.pitch = FuelPitchRelation.Evaluate(_hp / MaxHp);
 
     }
 
@@ -85,6 +89,8 @@ public class Kamyon : MonoBehaviour
 
         if (coll.gameObject.layer == _minionLayer)
         {
+            AudioSource.PlayOneShot(ExplodeAudioClip, 0.5f);
+
             Destroy(coll.gameObject);
             FindObjectOfType<GameManager>().EndGame(false);
         }

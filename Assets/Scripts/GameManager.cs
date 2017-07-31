@@ -11,6 +11,7 @@ public class GameManager : MonoBehaviour
     public Kamyon Kamyon;
     public Death Death;
     public BatterySpawner BatterySpawner;
+    public MinionSpawner MinionSpawner;
     public Ui Ui;
     public Fire Fire;
 
@@ -31,6 +32,7 @@ public class GameManager : MonoBehaviour
         Death.enabled = false;
         Kamyon.enabled = false;
         Fire.enabled = false;
+        MinionSpawner.DeactivateMinions();
 
         if (isWon)
         {

@@ -64,4 +64,6 @@ public class MinionSpawner : MonoBehaviour
     {
         return Vector3.Distance(Kamyon.transform.position, Goal.transform.position);
     }
+
+    
 }
