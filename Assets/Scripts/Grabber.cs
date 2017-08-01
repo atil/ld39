@@ -56,7 +56,7 @@ public class Grabber : MonoBehaviour
         foreach (var battery in _batterySpawner.Batteries)
         {
             if (Vector3.Distance(battery.transform.position, GrabVolume.transform.position) < 5
-                && battery.transform.position.y > 1)
+                && battery.transform.position.y < 1)
             {
                 var coll = battery.GetComponent<Collider>();
                 Vector3 normal;
