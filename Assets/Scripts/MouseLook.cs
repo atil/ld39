@@ -8,7 +8,9 @@ public class MouseLook
 {
     private readonly Vector2 _pitchLimits;
 
-    private const float Sensitivity = 2f;
+    private bool _isYInverted = false;
+
+    private const float Sensitivity = 1.8f;
     private readonly Transform _cam;
     private float _pitch;
     private float _yaw;
@@ -21,13 +23,25 @@ public class MouseLook
 
     public Vector3 Update()
     {
-        _pitch -= Sensitivity * Input.GetAxis("Mouse Y");
+        if (_isYInverted)
+        {
+            _pitch += Sensitivity * Input.GetAxis("Mouse Y");
+        }
+        else
+        {
+            _pitch -= Sensitivity * Input.GetAxis("Mouse Y");
+        }
         _yaw += Sensitivity * Input.GetAxis("Mouse X");
 
         _pitch = Mathf.Clamp(_pitch, _pitchLimits.x, _pitchLimits.y);
 
         // Don't slerp. We want sharp rotation
         _cam.localRotation = Quaternion.Euler(_pitch, _yaw, 0f);
+
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            _isYInverted = !_isYInverted;
+        }
 
         return _cam.forward;
 

@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class MinionSpawner : MonoBehaviour
 {
-    public const float MaxSpawnDuration = 4f;
-    public const float MinSpawnDuration = 2f;
+    public const float MaxSpawnDuration = 5f;
+    public const float MinSpawnDuration = 2.5f;
 
     public GameObject MinionPrefab;
     public GameObject ExplosionPrefab;
