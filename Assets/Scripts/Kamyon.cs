@@ -29,6 +29,7 @@ public class Kamyon : MonoBehaviour
     private float _hp;
     private Slider _hpSlider;
     private Death _death;
+    private BatterySpawner _batterySpawner;
 
     void Start()
     {
@@ -38,6 +39,7 @@ public class Kamyon : MonoBehaviour
         _minionLayer = LayerMask.NameToLayer("Minion");
         _goalLayer = LayerMask.NameToLayer("Goal");
         _death = FindObjectOfType<Death>();
+        _batterySpawner = FindObjectOfType<BatterySpawner>();
     }
 
     void Update()
@@ -83,6 +85,8 @@ public class Kamyon : MonoBehaviour
                    + emptyTankCoeff * 0.15f;
 
             Destroy(coll.gameObject);
+
+            _batterySpawner.KillBattery(coll.GetComponent<Battery>());
 
             AudioSource.PlayOneShot(BatteryAddClip);
         }

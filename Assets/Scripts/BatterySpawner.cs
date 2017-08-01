@@ -8,6 +8,7 @@ public class BatterySpawner : MonoBehaviour
 {
     public GameObject BatteryPrefab;
     public BoxCollider[] SpawnVolumes;
+    public readonly List<Battery> Batteries = new List<Battery>();
 
     private float _nextSpawnTime;
     private float _spawnTimer;
@@ -21,6 +22,8 @@ public class BatterySpawner : MonoBehaviour
                 RandomPointInVolume(SpawnVolumes[Random.Range(0, SpawnVolumes.Length)].bounds), Quaternion.identity);
             _spawnTimer = 0;
             _nextSpawnTime = Random.Range(5f, 7.5f);
+
+            Batteries.Add(go.GetComponent<Battery>());
 
             StartCoroutine(BatteryLifeTime(go));
         }
@@ -43,7 +46,7 @@ public class BatterySpawner : MonoBehaviour
             {
                 if (go.activeInHierarchy)
                 {
-                    Destroy(go);
+                    KillBattery(go.GetComponent<Battery>());
                     break;
                 }
 
@@ -61,5 +64,11 @@ public class BatterySpawner : MonoBehaviour
         var y = Random.Range(-bnds.size.y, bnds.size.y);
         var z = Random.Range(-bnds.size.z, bnds.size.z);
         return center + new Vector3(x, y, z);
+    }
+
+    public void KillBattery(Battery battery)
+    {
+        Batteries.Remove(battery);
+        Destroy(battery.gameObject);
     }
 }
